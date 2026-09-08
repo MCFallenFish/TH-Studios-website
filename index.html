@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TH 工作室</title>
+  <meta name="description" content="TH 工作室官方网站">
+  <style>
+    :root {
+      --glass: rgba(255,255,255,.13);
+      --glass-strong: rgba(255,255,255,.19);
+      --line: rgba(255,255,255,.22);
+      --text: #fff;
+      --muted: rgba(255,255,255,.72);
+      --shadow: 0 24px 70px rgba(10,20,50,.28);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: Inter, "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
+      overflow-x: hidden;
+      background: #7895bd url("background.png") center center / cover fixed no-repeat;
+    }
+
+    /* A subtle veil keeps text readable while preserving the original image. */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        linear-gradient(120deg, rgba(30,48,92,.16), rgba(255,160,190,.05) 55%, rgba(20,35,75,.18));
+      pointer-events: none;
+    }
+
+    /* Soft moving light, giving the glass a liquid feel. */
+    .light {
+      position: fixed;
+      width: 42vw;
+      height: 42vw;
+      min-width: 260px;
+      min-height: 260px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(75px);
+      opacity: .17;
+      mix-blend-mode: screen;
+      animation: drift 16s ease-in-out infinite alternate;
+    }
+    .light.one { left: -14vw; top: 18vh; background: #fff; }
+    .light.two { right: -12vw; bottom: 5vh; background: #d8e5ff; animation-delay: -7s; }
+
+    @keyframes drift {
+      from { transform: translate3d(0,0,0) scale(1); }
+      to { transform: translate3d(7vw,-5vh,0) scale(1.12); }
+    }
+
+    /* Hidden sidebar trigger */
+    .sidebar {
+      position: fixed;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 66px;
+      min-height: 210px;
+      padding: 10px;
+      z-index: 20;
+      border: 1px solid transparent;
+      border-radius: 28px;
+      transition: width .42s cubic-bezier(.2,.8,.2,1),
+                  background .35s ease,
+                  border-color .35s ease,
+                  box-shadow .35s ease;
+    }
+
+    .sidebar:hover,
+    .sidebar:focus-within {
+      width: 228px;
+      background: rgba(255,255,255,.13);
+      border-color: var(--line);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(28px) saturate(135%);
+      -webkit-backdrop-filter: blur(28px) saturate(135%);
+    }
+
+    .menu-mark {
+      width: 44px;
+      height: 44px;
+      margin: 0 auto 8px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      font-size: 21px;
+      font-weight: 300;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.15);
+      box-shadow: inset 0 1px rgba(255,255,255,.22);
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav-link {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 14px;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 16px;
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateX(-8px);
+      pointer-events: none;
+      transition: opacity .25s ease, transform .35s ease, background .25s ease;
+    }
+
+    .sidebar:hover .nav-link,
+    .sidebar:focus-within .nav-link {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      background: rgba(255,255,255,.14);
+    }
+
+    .nav-icon {
+      width: 24px;
+      text-align: center;
+      font-size: 17px;
+      flex: 0 0 24px;
+    }
+
+    .nav-label {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+    }
+
+    section {
+      min-height: 100vh;
+      padding: 9vh 8vw 9vh 10vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-content {
+      width: min(900px, 100%);
+      text-align: center;
+    }
+
+    .brand {
+      display: inline-block;
+      padding: 9px 15px;
+      margin-bottom: 22px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: inset 0 1px rgba(255,255,255,.25);
+      font-size: 13px;
+      letter-spacing: 2px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(58px, 10vw, 132px);
+      line-height: .9;
+      letter-spacing: -5px;
+      text-shadow: 0 10px 50px rgba(20,30,70,.22);
+    }
+
+    .hero-subtitle {
+      margin: 28px auto 0;
+      max-width: 650px;
+      color: var(--muted);
+      font-size: clamp(16px, 2vw, 20px);
+      line-height: 1.7;
+    }
+
+    .glass-card {
+      width: min(760px, 100%);
+      padding: clamp(28px, 5vw, 48px);
+      border: 1px solid var(--line);
+      border-radius: 34px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.19), rgba(255,255,255,.075));
+      backdrop-filter: blur(30px) saturate(135%);
+      -webkit-backdrop-filter: blur(30px) saturate(135%);
+      box-shadow: var(--shadow), inset 0 1px rgba(255,255,255,.28);
+    }
+
+    .glass-card h2 {
+      margin: 0 0 10px;
+      font-size: clamp(36px, 6vw, 62px);
+      letter-spacing: -2px;
+    }
+
+    .glass-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .bili-button {
+      margin-top: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 260px;
+      min-height: 58px;
+      padding: 0 25px;
+      border-radius: 999px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      background: rgba(255,255,255,.16);
+      border: 1px solid rgba(255,255,255,.28);
+      box-shadow: inset 0 1px rgba(255,255,255,.3), 0 15px 40px rgba(20,30,70,.16);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: transform .25s ease, background .25s ease, box-shadow .25s ease;
+    }
+
+    .bili-button:hover {
+      transform: translateY(-3px) scale(1.015);
+      background: rgba(255,255,255,.23);
+      box-shadow: inset 0 1px rgba(255,255,255,.35), 0 20px 48px rgba(20,30,70,.23);
+    }
+
+    .page-title {
+      margin-bottom: 28px;
+      font-size: clamp(42px, 7vw, 76px);
+      letter-spacing: -3px;
+    }
+
+    .members, .downloads {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .item {
+      padding: 24px;
+      min-height: 150px;
+      border-radius: 24px;
+      background: rgba(255,255,255,.11);
+      border: 1px solid rgba(255,255,255,.18);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: inset 0 1px rgba(255,255,255,.2);
+    }
+
+    .item h3 { margin: 0 0 8px; font-size: 22px; }
+    .item p { margin: 0; color: var(--muted); line-height: 1.6; }
+
+    .download-button {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 10px 17px;
+      border-radius: 999px;
+      color: #fff;
+      text-decoration: none;
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.2);
+    }
+
+    .hint {
+      margin-top: 24px;
+      color: rgba(255,255,255,.58);
+      font-size: 13px;
+    }
+
+    @media (max-width: 700px) {
+      body { background-attachment: scroll; }
+      .sidebar {
+        left: 9px;
+        top: 18px;
+        transform: none;
+      }
+      .sidebar:hover, .sidebar:focus-within { width: 210px; }
+      section { padding: 100px 22px 70px 88px; }
+      h1 { letter-spacing: -3px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .light { animation: none; }
+      * { transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="light one"></div>
+  <div class="light two"></div>
+
+  <aside class="sidebar" aria-label="网站导航">
+    <div class="menu-mark" aria-hidden="true">☰</div>
+    <nav class="menu">
+      <a class="nav-link active" href="#home">
+        <span class="nav-icon">⌂</span><span class="nav-label">首页</span>
+      </a>
+      <a class="nav-link" href="#downloads">
+        <span class="nav-icon">↓</span><span class="nav-label">下载</span>
+      </a>
+      <a class="nav-link" href="#team">
+        <span class="nav-icon">♧</span><span class="nav-label">团队成员</span>
+      </a>
+    </nav>
+  </aside>
+
+  <main>
+    <section id="home">
+      <div class="hero-content">
+        <div class="brand">TH STUDIOS</div>
+        <h1>TH 工作室</h1>
+        <p class="hero-subtitle">
+          创造 · 分享 · 探索<br>
+          欢迎来到 TH 工作室。
+        </p>
+
+        <div class="glass-card" style="margin: 42px auto 0;">
+          <h2>Bilibili</h2>
+          <p>想了解我们的最新动态？来 Bilibili 找我们吧。</p>
+          <!-- 把下面的链接换成你们真正的 Bilibili 主页即可 -->
+          <a class="bili-button" href="https://space.bilibili.com/" target="_blank" rel="noopener">
+            在 Bilibili 上关注我们
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="downloads">
+      <div class="glass-card">
+        <h2 class="page-title">下载</h2>
+        <p>这里以后放 TH 工作室提供的客户端、工具、模组或其他文件。</p>
+        <div class="downloads">
+          <div class="item">
+            <h3>即将上线</h3>
+            <p>下载项目还在准备中。</p>
+            <a class="download-button" href="#" onclick="return false;">暂未开放</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="team">
+      <div class="glass-card">
+        <h2 class="page-title">团队成员</h2>
+        <p>这里以后放 TH 工作室的成员资料。</p>
+        <div class="members">
+          <div class="item">
+            <h3>FallenFish</h3>
+            <p>TH Studios</p>
+          </div>
+          <div class="item">
+            <h3>成员 02</h3>
+            <p>即将加入介绍</p>
+          </div>
+        </div>
+        <div class="hint">成员名称、头像和简介之后都可以很容易替换。</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // 根据滚动位置自动高亮左侧导航。
+    const links = [...document.querySelectorAll('.nav-link')];
+    const sections = [...document.querySelectorAll('main section')];
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          links.forEach(link => link.classList.toggle(
+            'active',
+            link.getAttribute('href') === '#' + entry.target.id
+          ));
+        }
+      });
+    }, { threshold: 0.55 });
+
+    sections.forEach(section => observer.observe(section));
+  </script>
+</body>
+</html>
