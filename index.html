@@ -64,15 +64,15 @@
     /* Hidden sidebar trigger */
     .sidebar {
       position: fixed;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 66px;
-      min-height: 210px;
-      padding: 10px;
+      left: 0;
+      top: 0;
+      width: 64px;
+      height: 100vh;
+      padding: 10px 8px;
       z-index: 20;
       border: 1px solid transparent;
-      border-radius: 28px;
+      border-left: 0;
+      border-radius: 0 24px 24px 0;
       transition: width .42s cubic-bezier(.2,.8,.2,1),
                   background .35s ease,
                   border-color .35s ease,
@@ -92,7 +92,7 @@
     .menu-mark {
       width: 44px;
       height: 44px;
-      margin: 0 auto 8px;
+      margin: 8px auto 14px;
       display: grid;
       place-items: center;
       border-radius: 16px;
@@ -294,8 +294,9 @@
     @media (max-width: 700px) {
       body { background-attachment: scroll; }
       .sidebar {
-        left: 9px;
-        top: 18px;
+        left: 0;
+        top: 0;
+        height: 100vh;
         transform: none;
       }
       .sidebar:hover, .sidebar:focus-within { width: 210px; }
@@ -333,18 +334,12 @@
   <main>
     <section id="home">
       <div class="hero-content">
-        <div class="brand">TH STUDIOS</div>
         <h1>TH 工作室</h1>
-        <p class="hero-subtitle">
-          创造 · 分享 · 探索<br>
-          欢迎来到 TH 工作室。
-        </p>
-
         <div class="glass-card" style="margin: 42px auto 0;">
           <h2>Bilibili</h2>
           <p>想了解我们的最新动态？来 Bilibili 找我们吧。</p>
           <!-- 把下面的链接换成你们真正的 Bilibili 主页即可 -->
-          <a class="bili-button" href="https://space.bilibili.com/" target="_blank" rel="noopener">
+          <a class="bili-button" href="https://space.bilibili.com/3706978027178894" target="_blank" rel="noopener">
             在 Bilibili 上关注我们
           </a>
         </div>
@@ -354,12 +349,15 @@
     <section id="downloads">
       <div class="glass-card">
         <h2 class="page-title">下载</h2>
-        <p>这里以后放 TH 工作室提供的客户端、工具、模组或其他文件。</p>
         <div class="downloads">
           <div class="item">
-            <h3>即将上线</h3>
-            <p>下载项目还在准备中。</p>
-            <a class="download-button" href="#" onclick="return false;">暂未开放</a>
+            <h3>惊变一百天</h3>
+            <p>密码已在剪切板上。</p>
+            <a class="download-button"
+               href="https://wwaxa.lanzoue.com/b01bjdzi4d"
+               onclick="return openDownload(event, 'https://wwaxa.lanzoue.com/b01bjdzi4d');">
+              下载
+            </a>
           </div>
         </div>
       </div>
@@ -401,6 +399,41 @@
     }, { threshold: 0.55 });
 
     sections.forEach(section => observer.observe(section));
+
+    // 下载时复制密码，并在跳转前提示用户。
+    function openDownload(event, url) {
+      event.preventDefault();
+      const password = '9x88';
+
+      const go = () => {
+        alert('下载密码 9x88 已复制');
+        window.location.href = url;
+      };
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(password).then(go).catch(() => {
+          fallbackCopy(password);
+          go();
+        });
+      } else {
+        fallbackCopy(password);
+        go();
+      }
+
+      return false;
+    }
+
+    function fallbackCopy(text) {
+      const input = document.createElement('textarea');
+      input.value = text;
+      input.style.position = 'fixed';
+      input.style.opacity = '0';
+      document.body.appendChild(input);
+      input.focus();
+      input.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      input.remove();
+    }
   </script>
 </body>
 </html>
